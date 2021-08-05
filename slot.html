@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 1. Slot -->
+        <mybutton>送出</mybutton>
+        <mybutton>123</mybutton>
+        <br>
+        <br>
+
+        <!-- 2. Fallback Content 預備內容 -->
+        <mybutton_2></mybutton_2>
+        <mybutton_2>自定義標籤名稱</mybutton_2>
+        <br>
+        <br>
+
+        <!-- 3. Named Slots 具名插槽 => v-slot: -->
+        <product>
+            <template v-slot:price>$99</template>
+            <template v-slot:productname>商品</template>
+        </product>
+
+        <product>
+            <template v-slot:productname>商品2</template>
+            <template v-slot:price>$1129</template>
+            <!-- 對應模組內未命名或名為 default 的插槽位置-->
+            <template>
+                <h4>Here is default</h4>
+            </template>
+            <!-- <template><h4>Here is default</h4></template> 跟下面意思相同-->
+            <template v-slot:default>
+                <h4>Here is default</h4>
+            </template>
+        </product>
+
+
+        <!-- 4. Compilation Scope 編譯作用域-->
+        <!-- ====> Scoped Slots 作用域插槽 -->
+
+
+
+        <basic-slot>
+            Next
+        </basic-slot>
+    </div>
+
+    <script>
+        // 1. Slot
+        Vue.component("mybutton", {
+            template: `<button>
+                <slot></slot>
+                </button>`
+        })
+
+        // 2. Fallback Content 預備內容
+        Vue.component("mybutton_2", {
+            template: `
+            <button>
+                <slot>在插槽預先寫"送出"</slot>
+            </button>
+            `
+        })
+
+        // 3. Named Slots 具名插槽
+        Vue.component("product", {
+            template: `
+            <section>
+            <h3>
+                <slot name="productname"></slot>
+            </h3>
+            <span>
+                <slot name="price"></slot>
+            </span>
+            <slot></slot>
+            </section>
+            `
+        })
+
+        // 4. Compilation Scope 編譯作用域
+        // ====> Scoped Slots 作用域插槽
+        Vue.component("scoped",{
+            template:`
+            <span>
+                <slot name="price"></slot>
+            </span>
+            `
+        })
+
+
+
+        Vue.component("basic-slot", {
+            // <slot></slot>指定外層模組標籤內容放置的位置
+            // 可放入純文本、html標籤、其他模組
+            template: `<div>
+                <button>
+              <slot>123</slot>
+              </button>
+            </div>`
+        });
+
+        Vue.component("name-slot", {
+            // 在 <slot> 標籤中利用 attribute 來命名插槽，並決定不同名字的插槽內容在畫面顯示後的位置
+            template: `<div>
+    <div>
+        <slot name="testing"></slot>
+      <slot name="header"></slot>
+      <slot name="container"></slot>
+      <slot name="footer"></slot>
+      <slot></slot>
+    </div>
+  </div>`
+        });
+
+        new Vue({
+            el: '#app'
+        });
+
+
+    </script>
+</body>
+
+</html>
